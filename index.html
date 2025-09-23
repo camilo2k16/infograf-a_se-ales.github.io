@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulaciones Analógicas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.05) 2px,
+                rgba(255,255,255,0.05) 4px
+            );
+            animation: wave 20s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(50px); }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 50px 30px;
+            background: #f8f9fa;
+        }
+
+        .modulation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modulation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .modulation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .am-card::before { background: linear-gradient(90deg, #FF6B6B, #FF8E8E); }
+        .fm-card::before { background: linear-gradient(90deg, #4ECDC4, #44A08D); }
+        .pm-card::before { background: linear-gradient(90deg, #45B7D1, #96C93D); }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .wave-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .am-wave {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+        }
+
+        .fm-wave {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+        }
+
+        .pm-wave {
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+        }
+
+        .wave-icon {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            font-size: 1em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .definition {
+            background: #f1f2f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .am-card .definition { border-left-color: #FF6B6B; }
+        .fm-card .definition { border-left-color: #4ECDC4; }
+        .pm-card .definition { border-left-color: #45B7D1; }
+
+        .equation {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .graphs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .graph {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 2px dashed #dee2e6;
+        }
+
+        .graph h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .wave-representation {
+            width: 100%;
+            height: 60px;
+            background: #e9ecef;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-representation::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #6c757d;
+            transform: translateY(-50%);
+        }
+
+        .application {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .application h4 {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .footer h3 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+        }
+
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .app-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .app-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .app-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .responsive {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
+            
+            .graphs {
+                grid-template-columns: 1fr;
+            }
+            
+            .applications-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Modulaciones Analógicas</h1>
+            <p>AM • FM • PM</p>
+        </div>
+
+        <div class="content">
+            <!-- AM Card -->
+            <div class="modulation-card am-card">
+                <div class="card-header">
+                    <div class="wave-icon am-wave">AM</div>
+                    <h2 class="card-title">Amplitude Modulation</h2>
+                    <p class="card-subtitle">Modulación en Amplitud</p>
+                </div>
+
+                <div class="definition">
+                    <strong>Definición:</strong> La amplitud de la portadora varía en función de la señal moduladora.
+                </div>
+
+                <div class="equation">
+                    s(t) = [A<sub>c</sub> + m(t)] cos(2πf<sub>c</sub>t)
+                </div>
+
+                <div class="graphs">
+                    <div class="graph">
+                        <h4>Dominio del Tiempo</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <path d="M10,30 Q30,10 50,30 T90,30 Q110,20 130,30 T170,30 Q190,40 210,30" 
+                                      stroke="#FF6B6B" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="graph">
+                        <h4>Dominio de Frecuencia</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <rect x="80" y="15" width="4" height="30" fill="#FF6B6B"/>
+                                <rect x="60" y="25" width="3" height="20" fill="#FF8E8E"/>
+                                <rect x="100" y="25" width="3" height="20" fill="#FF8E8E"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application">
+                    <h4>📻 Aplicación Real</h4>
+                    <p>Transmisión de radio AM</p>
+                </div>
+            </div>
+
+            <!-- FM Card -->
+            <div class="modulation-card fm-card">
+                <div class="card-header">
+                    <div class="wave-icon fm-wave">FM</div>
+                    <h2 class="card-title">Frequency Modulation</h2>
+                    <p class="card-subtitle">Modulación en Frecuencia</p>
+                </div>
+
+                <div class="definition">
+                    <strong>Definición:</strong> La frecuencia instantánea de la portadora cambia según la señal moduladora.
+                </div>
+
+                <div class="equation">
+                    s(t) = A<sub>c</sub> cos[2πf<sub>c</sub>t + k<sub>f</sub>∫m(t)dt]
+                </div>
+
+                <div class="graphs">
+                    <div class="graph">
+                        <h4>Dominio del Tiempo</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <path d="M10,30 Q15,10 20,30 T30,30 Q35,10 40,30 T55,30 Q65,10 75,30 T95,30 Q105,10 115,30 T135,30 Q145,10 155,30 T175,30 Q185,10 195,30" 
+                                      stroke="#4ECDC4" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="graph">
+                        <h4>Dominio de Frecuencia</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <rect x="90" y="10" width="4" height="40" fill="#4ECDC4"/>
+                                <rect x="70" y="20" width="3" height="20" fill="#44A08D"/>
+                                <rect x="110" y="20" width="3" height="20" fill="#44A08D"/>
+                                <rect x="50" y="30" width="2" height="15" fill="#44A08D"/>
+                                <rect x="130" y="30" width="2" height="15" fill="#44A08D"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application">
+                    <h4>🎵 Aplicación Real</h4>
+                    <p>Radio FM, audio de alta fidelidad</p>
+                </div>
+            </div>
+
+            <!-- PM Card -->
+            <div class="modulation-card pm-card">
+                <div class="card-header">
+                    <div class="wave-icon pm-wave">PM</div>
+                    <h2 class="card-title">Phase Modulation</h2>
+                    <p class="card-subtitle">Modulación en Fase</p>
+                </div>
+
+                <div class="definition">
+                    <strong>Definición:</strong> La fase de la portadora varía proporcionalmente a la señal moduladora.
+                </div>
+
+                <div class="equation">
+                    s(t) = A<sub>c</sub> cos[2πf<sub>c</sub>t + k<sub>p</sub>m(t)]
+                </div>
+
+                <div class="graphs">
+                    <div class="graph">
+                        <h4>Dominio del Tiempo</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <path d="M10,30 Q20,10 30,30 T50,30 Q60,20 70,30 T90,30 Q100,40 110,30 T130,30 Q140,10 150,30 T170,30 Q180,20 190,30" 
+                                      stroke="#45B7D1" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="graph">
+                        <h4>Dominio de Frecuencia</h4>
+                        <div class="wave-representation">
+                            <svg width="100%" height="60" viewBox="0 0 200 60">
+                                <rect x="85" y="15" width="4" height="30" fill="#45B7D1"/>
+                                <rect x="65" y="25" width="3" height="20" fill="#96C93D"/>
+                                <rect x="105" y="25" width="3" height="20" fill="#96C93D"/>
+                                <rect x="45" y="35" width="2" height="15" fill="#96C93D"/>
+                                <rect x="125" y="35" width="2" height="15" fill="#96C93D"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application">
+                    <h4>🛰️ Aplicación Real</h4>
+                    <p>Comunicaciones satelitales y Wi-Fi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>Aplicaciones Reales</h3>
+            <div class="applications-grid">
+                <div class="app-item">
+                    <div class="app-icon">📻</div>
+                    <h4>Radio AM/FM</h4>
+                    <p>Transmisión de audio</p>
+                </div>
+                <div class="app-item">
+                    <div class="app-icon">📡</div>
+                    <h4>Antenas</h4>
+                    <p>Comunicación inalámbrica</p>
+                </div>
+                <div class="app-item">
+                    <div class="app-icon">🛰️</div>
+                    <h4>Satélites</h4>
+                    <p>Comunicación espacial</p>
+                </div>
+                <div class="app-item">
+                    <div class="app-icon">📱</div>
+                    <h4>Wi-Fi</h4>
+                    <p>Redes inalámbricas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
