@@ -163,6 +163,7 @@
             let entrada = {};
             for (let linea of lineas) {
                 linea = linea.trim();
+                if (!linea) continue;
                 if (linea.startsWith('V:')) {
                     entrada.V = parseFloat(linea.split(':')[1]);
                 } else if (linea.startsWith('W:')) {
@@ -171,7 +172,9 @@
                     entrada.PWM = parseFloat(linea.split(':')[1]);
                 } else if (linea.startsWith('t:')) {
                     entrada.t = parseFloat(linea.split(':')[1]);
-                    datos.push(entrada);
+                    if (entrada.V !== undefined && entrada.W !== undefined && entrada.PWM !== undefined) {
+                        datos.push({...entrada});
+                    }
                     entrada = {};
                 }
             }
