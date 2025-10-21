@@ -94,7 +94,7 @@
         </div>
         <div class="error-box" id="errorBox"></div>
         <div class="info-box" id="infoBox">
-            Sube un archivo .txt para visualizar los datos. Los primeros 8 registros serán eliminados automáticamente.
+            Sube un archivo .txt para visualizar los datos. Los primeros 2 registros serán eliminados automáticamente.
         </div>
         <div class="charts" id="charts">
             <div class="chart-box">
@@ -163,7 +163,6 @@
             let entrada = {};
             for (let linea of lineas) {
                 linea = linea.trim();
-                if (!linea) continue;
                 if (linea.startsWith('V:')) {
                     entrada.V = parseFloat(linea.split(':')[1]);
                 } else if (linea.startsWith('W:')) {
@@ -172,13 +171,11 @@
                     entrada.PWM = parseFloat(linea.split(':')[1]);
                 } else if (linea.startsWith('t:')) {
                     entrada.t = parseFloat(linea.split(':')[1]);
-                    if (entrada.V !== undefined && entrada.W !== undefined && entrada.PWM !== undefined) {
-                        datos.push({...entrada});
-                    }
+                    datos.push(entrada);
                     entrada = {};
                 }
             }
-            return datos.slice(8);
+            return datos.slice(2);
         }
         function mostrarError(mensaje) {
             document.getElementById('errorBox').textContent = mensaje;
